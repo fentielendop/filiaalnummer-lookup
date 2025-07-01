@@ -31,7 +31,7 @@ first_norm_col = df.columns[0]
 first_orig_col = [orig for orig, norm in col_mapping.items() if norm == first_norm_col][0]
 
 # App header
-st.title("Lookup by First Column")
+st.title("filiaalnummer app")
 st.write(f"Enter a value to match the first column: **{first_orig_col}**")
 
 # Input field
