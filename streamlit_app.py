@@ -1,10 +1,12 @@
+import streamlit as st
+import pandas as pd
+
+# Configure page for mobile-friendly layout
 st.set_page_config(
     page_title="Filiaalnummer Lookup",
     layout="centered",
     initial_sidebar_state="auto"
 )
-import streamlit as st
-import pandas as pd
 
 # Load data from the provided Excel file
 def load_data():
@@ -44,5 +46,5 @@ st.markdown(
     "**How to run:**\n"
     "1. Ensure `klantenlijst.xls` is in the same directory as this script.\n"
     "2. Install dependencies: `pip install streamlit pandas openpyxl`\n"
-    "3. Run the app with: `streamlit run your_script_name.py`"
+    "3. Run the app with: `streamlit run streamlit_app.py`"
 )
