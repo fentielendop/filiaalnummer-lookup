@@ -11,25 +11,33 @@ st.set_page_config(
 # Load data from the provided Excel file
 def load_data():
     try:
-        # For .xlsx files, use openpyxl engine
         df = pd.read_excel('klantenlijst.xlsx', engine='openpyxl')
     except Exception as e:
         st.error(f"Error loading file: {e}")
         st.stop()
+
+    # Normalize column names: strip, lower, replace spaces with underscores
+    original_cols = df.columns.tolist()
+    df.columns = [col.strip().lower().replace(' ', '_') for col in original_cols]
+    df._original_columns = original_cols  # store for reference
     return df
 
 # Cache the data
 df = st.cache_data(load_data)()
 
-# Show columns for debugging
+# Show original vs normalized columns for debugging
 with st.expander("View Data Columns"):
-    st.write(df.columns.tolist())
+    st.write("Original vs Normalized:")
+    st.write({orig: norm for orig, norm in zip(df._original_columns, df.columns)})
 
 # App title
 st.title("Filiaalnummer Lookup App")
 
 # Input field for the filiaalnummer
 fil_num = st.text_input("Enter filiaalnummer:")
+
+# Define the normalized column name to use
+column_name = 'filiaalnummer'
 
 # When the user enters a value, filter and display the matching rows
 if fil_num:
@@ -38,8 +46,6 @@ if fil_num:
     except ValueError:
         st.error("Please enter a valid integer for filiaalnummer.")
     else:
-        # Ensure column name matches actual data
-        column_name = 'filiaalnummer'
         if column_name not in df.columns:
             st.error(f"Column '{column_name}' not found. Check the column list above.")
         else:
