@@ -9,17 +9,18 @@ st.set_page_config(
 )
 
 # Load data from the provided Excel file
+@st.cache_data
 def load_data():
     try:
-        # For .xls files, specify engine and ensure xlrd is installed
-        df = pd.read_excel('klantenlijst.xls', engine='xlrd')
+        # For .xlsx files, use openpyxl engine
+        df = pd.read_excel('klantenlijst.xlsx', engine='openpyxl')
     except Exception as e:
         st.error(f"Error loading file: {e}")
         st.stop()
     return df
 
-# Cache the data for faster reloads
-df = st.cache_data(load_data)()
+# Cache the data
+df = load_data()
 
 # App title
 st.title("Filiaalnummer Lookup App")
@@ -30,7 +31,6 @@ fil_num = st.text_input("Enter filiaalnummer:")
 # When the user enters a value, filter and display the matching rows
 if fil_num:
     try:
-        # Convert to the appropriate type (int) if needed
         fil_num_val = int(fil_num)
     except ValueError:
         st.error("Please enter a valid integer for filiaalnummer.")
@@ -45,7 +45,8 @@ if fil_num:
 st.markdown("---")
 st.markdown(
     "**How to run:**\n"
-    "1. Ensure `klantenlijst.xls` is in the same directory as this script.\n"
-    "2. Install dependencies: `pip install streamlit pandas openpyxl xlrd`\n"
-    "3. Run the app with: `streamlit run streamlit_app.py`"
+    "1. Convert `klantenlijst.xls` to `klantenlijst.xlsx` in Excel.\n"
+    "2. Ensure `klantenlijst.xlsx` is in the same directory as this script.\n"
+    "3. Install dependencies: `pip install streamlit pandas openpyxl`\n"
+    "4. Run the app with: `streamlit run streamlit_app.py`"
 )
