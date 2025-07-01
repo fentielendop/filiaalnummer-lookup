@@ -11,7 +11,8 @@ st.set_page_config(
 # Load data from the provided Excel file
 def load_data():
     try:
-        df = pd.read_excel('klantenlijst.xls')
+        # For .xls files, specify engine and ensure xlrd is installed
+        df = pd.read_excel('klantenlijst.xls', engine='xlrd')
     except Exception as e:
         st.error(f"Error loading file: {e}")
         st.stop()
@@ -45,6 +46,6 @@ st.markdown("---")
 st.markdown(
     "**How to run:**\n"
     "1. Ensure `klantenlijst.xls` is in the same directory as this script.\n"
-    "2. Install dependencies: `pip install streamlit pandas openpyxl`\n"
+    "2. Install dependencies: `pip install streamlit pandas openpyxl xlrd`\n"
     "3. Run the app with: `streamlit run streamlit_app.py`"
 )
