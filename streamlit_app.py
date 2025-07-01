@@ -3,7 +3,7 @@ import pandas as pd
 
 # Configure page for mobile-friendly layout
 st.set_page_config(
-    page_title="Lookup by First Column",
+    page_title="Filiaalnummer App",
     layout="centered",
     initial_sidebar_state="auto"
 )
