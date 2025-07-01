@@ -11,24 +11,26 @@ st.set_page_config(
 # Load data from the provided Excel file
 def load_data():
     try:
+        # Read .xlsx with openpyxl
         df = pd.read_excel('klantenlijst.xlsx', engine='openpyxl')
     except Exception as e:
         st.error(f"Error loading file: {e}")
         st.stop()
 
-    # Normalize column names: strip, lower, replace spaces with underscores
+    # Normalize column names
     original_cols = df.columns.tolist()
-    df.columns = [col.strip().lower().replace(' ', '_') for col in original_cols]
-    df._original_columns = original_cols  # store for reference
-    return df
+    normalized_cols = [col.strip().lower().replace(' ', '_') for col in original_cols]
+    df.columns = normalized_cols
+    # Create mapping of original to normalized
+    col_mapping = dict(zip(original_cols, normalized_cols))
+    return df, col_mapping
 
-# Cache the data
-df = st.cache_data(load_data)()
+# Cache the data and get mapping
+df, col_mapping = st.cache_data(load_data)()
 
 # Show original vs normalized columns for debugging
 with st.expander("View Data Columns"):
-    st.write("Original vs Normalized:")
-    st.write({orig: norm for orig, norm in zip(df._original_columns, df.columns)})
+    st.write(col_mapping)
 
 # App title
 st.title("Filiaalnummer Lookup App")
