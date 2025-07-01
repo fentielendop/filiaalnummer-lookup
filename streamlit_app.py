@@ -11,7 +11,6 @@ st.set_page_config(
 # Load data from the provided Excel file
 def load_data():
     try:
-        # Read .xlsx with openpyxl
         df = pd.read_excel('klantenlijst.xlsx', engine='openpyxl')
     except Exception as e:
         st.error(f"Error loading file: {e}")
@@ -28,34 +27,47 @@ def load_data():
 # Cache the data and get mapping
 df, col_mapping = st.cache_data(load_data)()
 
-# Show original vs normalized columns for debugging
+# Debug: show original vs normalized columns
 with st.expander("View Data Columns"):
     st.write(col_mapping)
 
 # App title
 st.title("Filiaalnummer Lookup App")
+st.write("Enter a filiaalnummer to see all information on that row.")
 
 # Input field for the filiaalnummer
-fil_num = st.text_input("Enter filiaalnummer:")
+fil_num = st.text_input("Filiaalnummer", placeholder="e.g. 12345")
 
-# Define the normalized column name to use
+# Normalized column name to search
 column_name = 'filiaalnummer'
 
-# When the user enters a value, filter and display the matching rows
 if fil_num:
+    # Validate input
     try:
         fil_num_val = int(fil_num)
     except ValueError:
         st.error("Please enter a valid integer for filiaalnummer.")
     else:
+        # Check column exists
         if column_name not in df.columns:
             st.error(f"Column '{column_name}' not found. Check the column list above.")
         else:
+            # Filter rows
             result = df[df[column_name] == fil_num_val]
-            if not result.empty:
-                st.dataframe(result)
-            else:
+            if result.empty:
                 st.warning(f"No records found for filiaalnummer {fil_num_val}.")
+            else:
+                # If single match, show details vertically
+                if len(result) == 1:
+                    row = result.iloc[0]
+                    st.subheader(f"Details for filiaalnummer {fil_num_val}")
+                    for orig_col, norm_col in col_mapping.items():
+                        value = row[norm_col]
+                        st.write(f"**{orig_col}**: {value}")
+                else:
+                    # Multiple matches: show full table
+                    st.subheader(f"Multiple records for filiaalnummer {fil_num_val}")
+                    st.dataframe(result)
 
 # Instructions for running the app
 st.markdown("---")
