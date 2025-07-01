@@ -56,12 +56,3 @@ if user_input:
             for orig_col, norm_col in col_mapping.items():
                 st.write(f"**{orig_col}**: {row[norm_col]}")
 
-# Footer instructions
-st.markdown("---")
-st.markdown(
-    "**How to run:**\n"
-    "1. Convert `klantenlijst.xls` to `klantenlijst.xlsx` inside Excel.\n"
-    "2. Place `klantenlijst.xlsx` next to this script.\n"
-    "3. Install: `pip install streamlit pandas openpyxl`\n"
-    "4. Launch: `streamlit run streamlit_app.py`"
-)
