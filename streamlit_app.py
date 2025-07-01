@@ -9,7 +9,6 @@ st.set_page_config(
 )
 
 # Load data from the provided Excel file
-@st.cache_data
 def load_data():
     try:
         # For .xlsx files, use openpyxl engine
@@ -20,7 +19,11 @@ def load_data():
     return df
 
 # Cache the data
-df = load_data()
+df = st.cache_data(load_data)()
+
+# Show columns for debugging
+with st.expander("View Data Columns"):
+    st.write(df.columns.tolist())
 
 # App title
 st.title("Filiaalnummer Lookup App")
@@ -35,11 +38,16 @@ if fil_num:
     except ValueError:
         st.error("Please enter a valid integer for filiaalnummer.")
     else:
-        result = df[df['filiaalnummer'] == fil_num_val]
-        if not result.empty:
-            st.dataframe(result)
+        # Ensure column name matches actual data
+        column_name = 'filiaalnummer'
+        if column_name not in df.columns:
+            st.error(f"Column '{column_name}' not found. Check the column list above.")
         else:
-            st.warning(f"No records found for filiaalnummer {fil_num_val}.")
+            result = df[df[column_name] == fil_num_val]
+            if not result.empty:
+                st.dataframe(result)
+            else:
+                st.warning(f"No records found for filiaalnummer {fil_num_val}.")
 
 # Instructions for running the app
 st.markdown("---")
